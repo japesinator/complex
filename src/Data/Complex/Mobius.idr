@@ -16,19 +16,24 @@ instance Num ZStar where
   _          + _          = Infinity
 
   (Finite a) - (Finite b) = Finite $ a - b
+  Infinity   - Infinity   = Finite $ 0
   _          - _          = Infinity
 
   (Finite a) * (Finite b) = Finite $ a * b
   _          * _          = Infinity
 
-  fromInteger x = Finite $ fromInteger x:+0
+  fromInteger x = Finite $ fromInteger x
 
   abs Infinity   = Infinity
   abs (Finite a) = Finite $ abs a
 
+instance Neg ZStar where
+  negate = (*) (Finite $ -1:+0)
+
 (/) : ZStar -> ZStar -> ZStar
+Infinity        / Infinity            = Finite $ 1
 Infinity        / _                   = Infinity
-_               / Infinity            = Finite $ 0:+0
+_               / Infinity            = Finite $ 0
 _               / (Finite $ 0.0:+0.0) = Infinity
 (Finite $ a:+b) / (Finite $ c:+d)     = Finite $
   ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))
@@ -44,17 +49,16 @@ instance Semigroup MT where
     MkMT (a' * a + b' * c) (a' * b + b' * d) (c' * a + d' * c) (c' * b + d' * d)
 
 instance Monoid MT where
-  neutral = MkMT (Finite $ 1:+0) (Finite $ 0:+0) (Finite $ 0:+0) (Finite $ 0:+1)
+  neutral = MkMT (Finite $ 1) (Finite $ 0) (Finite $ 0) (Finite $ 0:+1)
 
 instance Group MT where
-  inverse (MkMT a b c d) = MkMT d                      ((Finite $ -1:+0) * b)
-                                ((Finite $ -1:+0) * c) a
+  inverse (MkMT a b c d) = MkMT d (-b) (-c) a
 
 determinant : MT -> ZStar
 determinant (MkMT a b c d) = a * d - b * c
 
 valid : MT -> Bool
-valid = (/=) (Finite $ 0:+0) . determinant
+valid = (/=) (Finite $ 0) . determinant
 
 class VerifiedMT (m : MT) where
   MTValid : valid m = True
@@ -65,6 +69,7 @@ trace (MkMT a _ _ d) = a + d
 normalize : MT -> MT
 normalize m@(MkMT a b c d) = MkMT (a/determinant m) (b/determinant m)
                                   (c/determinant m) (d/determinant m)
+
 instance Eq MT where
   a == b = (\(MkMT a b c d),(MkMT a' b' c' d') =>
     (a,b,c,d) == (a',b',c',d')) (normalize a) (normalize b)
