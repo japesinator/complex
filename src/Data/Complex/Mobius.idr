@@ -3,7 +3,7 @@ module Data.Complex.Mobius
 import Control.Algebra
 import Data.Complex
 
-||| A type representing ℤ ∪ ∞ intuitively a point on the Mobius Sphere
+||| A type representing ℤ ∪ ∞. Intuitively, a point on the Mobius Sphere.
 data ZStar = Finite (Complex Float)
            | Infinity
 
@@ -17,7 +17,7 @@ instance Num ZStar where
   _          + _          = Infinity
 
   (Finite a) - (Finite b) = Finite $ a - b
-  Infinity   - Infinity   = Finite $ 0
+  Infinity   - Infinity   = Finite 0
   _          - _          = Infinity
 
   (Finite a) * (Finite b) = Finite $ a * b
@@ -32,9 +32,9 @@ instance Neg ZStar where
   negate = (*) (Finite $ -1:+0)
 
 (/) : ZStar -> ZStar -> ZStar
-Infinity        / Infinity            = Finite $ 1
+Infinity        / Infinity            = Finite 1
 Infinity        / _                   = Infinity
-_               / Infinity            = Finite $ 0
+_               / Infinity            = Finite 0
 _               / (Finite $ 0.0:+0.0) = Infinity
 (Finite $ a:+b) / (Finite $ c:+d)     = Finite $
   ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))
@@ -55,7 +55,7 @@ instance Semigroup MT where
     MkMT (a' * a + b' * c) (a' * b + b' * d) (c' * a + d' * c) (c' * b + d' * d)
 
 instance Monoid MT where
-  neutral = MkMT (Finite $ 1) (Finite $ 0) (Finite $ 0) (Finite $ 0:+1)
+  neutral = MkMT (Finite 1) (Finite 0) (Finite 0) (Finite $ 0:+1)
 
 instance Group MT where
   inverse (MkMT a b c d) = MkMT d (-b) (-c) a
@@ -68,7 +68,7 @@ determinant (MkMT a b c d) = a * d - b * c
 ||| Mobius transformations must have a non-zero determinant (be invertible).
 ||| This function checks that that condition holds.
 valid : MT -> Bool
-valid = (/=) (Finite $ 0) . determinant
+valid = (/=) (Finite 0) . determinant
 
 ||| A Mobius transformation which has a non-zero determinant.
 class VerifiedMT (m : MT) where
