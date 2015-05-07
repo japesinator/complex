@@ -100,17 +100,19 @@ data MTClass = Elliptical
 ||| Intuitively:
 |||
 ||| --------------+-----------
-||| Trace squared | Class
+|||  Normalized   |
+||| trace squared | Class
 ||| --------------+-----------
 ||| 0 ≤ σ < 4     | Elliptical
 ||| σ = 4         | Parabolic
 ||| 4 < σ < ∞     | Hyperbolic
 ||| σ ∈ ℂ \ [0,4] | Loxodromic
 classify : MT -> MTClass
-classify m = case trace m of
-                  Infinity   =>                               Hyperbolic
-                  (Finite t) => if t == conjugate t
-                         then ( if realPart (t * t) >  4 then Hyperbolic
-                           else if realPart (t * t) == 4 then Parabolic
-                                                         else Elliptical
-                              )                          else Loxodromic
+classify mt = let m = normalize mt in
+                  case trace m of
+                       Infinity   =>                               Hyperbolic
+                       (Finite t) => if t == conjugate t
+                              then ( if realPart (t * t) >  4 then Hyperbolic
+                                else if realPart (t * t) == 4 then Parabolic
+                                                              else Elliptical
+                                   )                          else Loxodromic
