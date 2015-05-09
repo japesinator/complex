@@ -2,47 +2,14 @@ module Data.Complex.Mobius
 
 import Control.Algebra
 import Data.Complex
-
-||| A type representing ℤ ∪ ∞. Intuitively, a point on the Mobius Sphere.
-data ZStar = Finite (Complex Float)
-           | Infinity
-
-instance Eq ZStar where
-  Infinity   == Infinity   = True
-  (Finite a) == (Finite b) = a == b
-  _          == _          = False
-
-instance Num ZStar where
-  (Finite a) + (Finite b) = Finite $ a + b
-  _          + _          = Infinity
-
-  (Finite a) - (Finite b) = Finite $ a - b
-  Infinity   - Infinity   = Finite 0
-  _          - _          = Infinity
-
-  (Finite a) * (Finite b) = Finite $ a * b
-  _          * _          = Infinity
-
-  fromInteger x = Finite $ fromInteger x
-
-  abs Infinity   = Infinity
-  abs (Finite a) = Finite $ abs a
-
-instance Neg ZStar where
-  negate = (*) (Finite $ -1:+0)
-
-(/) : ZStar -> ZStar -> ZStar
-Infinity        / Infinity            = Finite 1
-Infinity        / _                   = Infinity
-_               / Infinity            = Finite 0
-_               / (Finite $ 0.0:+0.0) = Infinity
-(Finite $ a:+b) / (Finite $ c:+d)     = Finite $
-  ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))
+import Data.Complex.ZStar
+import Data.Floats
 
 ||| A Mobius transformation is a function of the form f(z) = (az + b)/(cz + d).
 ||| Mobius transformations form a group, and can be composed with `<+>`.
 ||| It is important that the user ensures ad - bc ≠ 0, and a `VerifiedMT` class
 ||| is provided for when this needs to be guaranteed.
+
 data MT : Type where
   MkMT : (a : ZStar) -> (b : ZStar) -> (c : ZStar) -> (d : ZStar) -> MT
 
@@ -116,3 +83,14 @@ classify mt = let m = normalize mt in
                                 else if realPart (t * t) == 4 then Parabolic
                                                               else Elliptical
                                    )                          else Loxodromic
+
+||| This function returns the a tuple of the fixed points of a given Mobius
+||| transformation. Note that they can be equal, zero, or ∞.
+fixpoints : MT -> (ZStar, ZStar)
+fixpoints (MkMT a b c d) = (x1, x2) where
+  p2 : ZStar
+  x1 : ZStar
+  x2 : ZStar
+  p2 = (d - a) / (2 * c)
+  x1 = -p2 + sqrt (p2 * p2 + b / c)
+  x2 = -(2 * p2 + x1)
