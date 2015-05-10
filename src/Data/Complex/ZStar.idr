@@ -18,7 +18,7 @@ instance Num ZStar where
   _          + _          = Infinity
 
   (Finite a) - (Finite b) = Finite $ a - b
-  Infinity   - Infinity   = Finite 0
+  Infinity   - Infinity   = 0
   _          - _          = Infinity
 
   (Finite a) * (Finite b) = Finite $ a * b
@@ -33,9 +33,9 @@ instance Neg ZStar where
   negate = (*) (Finite $ -1:+0)
 
 (/) : ZStar -> ZStar -> ZStar
-Infinity        / Infinity            = Finite 1
+Infinity        / Infinity            = 1
 Infinity        / _                   = Infinity
-_               / Infinity            = Finite 0
+_               / Infinity            = 0
 _               / (Finite $ 0.0:+0.0) = Infinity
 (Finite $ a:+b) / (Finite $ c:+d)     = Finite $
   ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))

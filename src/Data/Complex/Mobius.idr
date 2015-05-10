@@ -9,7 +9,6 @@ import Data.Floats
 ||| Mobius transformations form a group, and can be composed with `<+>`.
 ||| It is important that the user ensures ad - bc ≠ 0, and a `VerifiedMT` class
 ||| is provided for when this needs to be guaranteed.
-
 data MT : Type where
   MkMT : (a : ZStar) -> (b : ZStar) -> (c : ZStar) -> (d : ZStar) -> MT
 
@@ -22,7 +21,7 @@ instance Semigroup MT where
     MkMT (a' * a + b' * c) (a' * b + b' * d) (c' * a + d' * c) (c' * b + d' * d)
 
 instance Monoid MT where
-  neutral = MkMT (Finite 1) (Finite 0) (Finite 0) (Finite $ 0:+1)
+  neutral = MkMT 1 0 0 (Finite $ 0:+1)
 
 instance Group MT where
   inverse (MkMT a b c d) = MkMT d (-b) (-c) a
@@ -35,7 +34,7 @@ determinant (MkMT a b c d) = a * d - b * c
 ||| Mobius transformations must have a non-zero determinant (be invertible).
 ||| This function checks that that condition holds.
 valid : MT -> Bool
-valid = (/=) (Finite 0) . determinant
+valid = (/=) 0 . determinant
 
 ||| A Mobius transformation which has a non-zero determinant.
 class VerifiedMT (m : MT) where
