@@ -4,7 +4,7 @@ import Data.Complex
 import Data.Complex.ZStar
 import Data.Floats
 
-||| Spherical coordinates ϕ and θ of a point on the Riemann Sphere
+||| Spherical coordinates ϕ and θ of a point on the Mobius Sphere
 record Spherical : Type where
   MkSpherical : (phi : Float) -> (theta : Float) -> Spherical
 
