@@ -15,5 +15,6 @@ toSpherical (Finite z) = MkSpherical (2 * atan (1 / magnitude z)) (phase z)
 
 ||| Convert a pair of spherical coordinates to a point from ℤ ∪ ∞.
 fromSpherical : Spherical -> ZStar
-fromSpherical (MkSpherical 0.0 _) = Infinity
-fromSpherical (MkSpherical p   t) = Finite $ mkPolar t (1 / tan (p / 2))
+fromSpherical (MkSpherical p   t) = if p == 0
+                                       then Infinity
+                                       else Finite $ mkPolar t (1 / tan (p / 2))

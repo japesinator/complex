@@ -36,8 +36,9 @@ instance Neg ZStar where
 Infinity        / Infinity            = 1
 Infinity        / _                   = Infinity
 _               / Infinity            = 0
-_               / (Finite $ 0.0:+0.0) = Infinity
-(Finite $ a:+b) / (Finite $ c:+d)     = Finite $
+(Finite $ a:+b) / (Finite $ c:+d)     = if c == 0 && d == 0
+                                           then Infinity
+                                           else Finite $
   ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))
 
 sqrt : ZStar -> ZStar
