@@ -3,6 +3,7 @@ package complex
 sourcedir = src
 
 modules = Data.Complex.Mobius,
+          Data.Complex.Spherical,
           Data.Complex.ZStar
 
 opts = "-p contrib"
