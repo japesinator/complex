@@ -32,6 +32,10 @@ instance Num CStar where
 instance Neg CStar where
   negate = (*) (Finite $ -1:+0)
 
+instance Show CStar where
+  show Infinity   = "Infinity"
+  show (Finite z) = "Finite (" ++ show z ++ ")"
+
 (/) : CStar -> CStar -> CStar
 Infinity        / Infinity            = 1
 Infinity        / _                   = Infinity
