@@ -8,6 +8,9 @@ import Data.Floats
 record Spherical : Type where
   MkSpherical : (phi : Float) -> (theta : Float) -> Spherical
 
+instance Eq Spherical where
+  (MkSpherical p t) == (MkSpherical p' t') = p == p' && t == t'
+
 ||| Convert a point from ℤ ∪ ∞ to a pair of spherical coordinates
 toSpherical : ZStar -> Spherical
 toSpherical Infinity   = MkSpherical 0 0
@@ -15,6 +18,26 @@ toSpherical (Finite z) = MkSpherical (2 * atan (1 / magnitude z)) (phase z)
 
 ||| Convert a pair of spherical coordinates to a point from ℤ ∪ ∞.
 fromSpherical : Spherical -> ZStar
-fromSpherical (MkSpherical p   t) = if p == 0
-                                       then Infinity
-                                       else Finite $ mkPolar t (1 / tan (p / 2))
+fromSpherical (MkSpherical p t) = if p == 0
+                                     then Infinity
+                                     else Finite $ mkPolar t (1 / tan (p / 2))
+
+instance Num Spherical where
+  a + b = toSpherical $ (fromSpherical a) + (fromSpherical b)
+
+  a - b = toSpherical $ (fromSpherical a) - (fromSpherical b)
+
+  a * b = toSpherical $ (fromSpherical a) * (fromSpherical b)
+
+  fromInteger = toSpherical . fromInteger
+
+  abs = toSpherical . abs . fromSpherical
+
+instance Neg Spherical where
+  negate (MkSpherical p t) = MkSpherical p (t + pi)
+
+(/) : Spherical -> Spherical -> Spherical
+a / b = toSpherical $ (fromSpherical a) / (fromSpherical b)
+
+sqrt : Spherical -> Spherical
+sqrt = toSpherical . sqrt . fromSpherical
