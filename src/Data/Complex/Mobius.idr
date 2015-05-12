@@ -2,7 +2,7 @@ module Data.Complex.Mobius
 
 import Control.Algebra
 import Data.Complex
-import Data.Complex.ZStar
+import Data.Complex.CStar
 import Data.Floats
 
 ||| A Mobius transformation is a function of the form f(z) = (az + b)/(cz + d).
@@ -10,10 +10,10 @@ import Data.Floats
 ||| It is important that the user ensures ad - bc ≠ 0, and a `VerifiedMT` class
 ||| is provided for when this needs to be guaranteed.
 data MT : Type where
-  MkMT : (a : ZStar) -> (b : ZStar) -> (c : ZStar) -> (d : ZStar) -> MT
+  MkMT : (a : CStar) -> (b : CStar) -> (c : CStar) -> (d : CStar) -> MT
 
 ||| Apply a Mobius transformation to a point on the Mobius sphere to yield a new point
-apply : MT -> ZStar -> ZStar
+apply : MT -> CStar -> CStar
 apply (MkMT a b c d) z = (a * z + b) / (c * z + d)
 
 instance Semigroup MT where
@@ -28,7 +28,7 @@ instance Group MT where
 
 ||| Mobius transformations can be represented as a two by two matrix [a,b;c,d].
 ||| This function takes the determinant of that matrix.
-determinant : MT -> ZStar
+determinant : MT -> CStar
 determinant (MkMT a b c d) = a * d - b * c
 
 ||| Mobius transformations must have a non-zero determinant (be invertible).
@@ -42,7 +42,7 @@ class VerifiedMT (m : MT) where
 
 ||| Mobius transformations can be represented as a two by two matrix [a,b;c,d].
 ||| This function calculates the trace of that matrix.
-trace : MT -> ZStar
+trace : MT -> CStar
 trace (MkMT a _ _ d) = a + d
 
 ||| A Mobius transformation is said to be "normalized" when ad - bc = 1. This
@@ -85,11 +85,11 @@ classify mt = let m = normalize mt in
 
 ||| This function returns the a tuple of the fixed points of a given Mobius
 ||| transformation. Note that they can be equal, zero, or ∞.
-fixpoints : MT -> (ZStar, ZStar)
+fixpoints : MT -> (CStar, CStar)
 fixpoints (MkMT a b c d) = (x1, x2) where
-  p2 : ZStar
-  x1 : ZStar
-  x2 : ZStar
+  p2 : CStar
+  x1 : CStar
+  x2 : CStar
   p2 = (d - a) / (2 * c)
   x1 = -p2 + sqrt (p2 * p2 + b / c)
   x2 = -(2 * p2 + x1)

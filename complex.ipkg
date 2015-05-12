@@ -2,8 +2,9 @@ package complex
 
 sourcedir = src
 
-modules = Data.Complex.Mobius,
-          Data.Complex.Spherical,
-          Data.Complex.ZStar
+modules = Data.Complex.CStar,
+          Data.Complex.Mobius,
+          Data.Complex.Riemann,
+          Data.Complex.Spherical
 
 opts = "-p contrib"
