@@ -44,3 +44,7 @@ _               / Infinity            = 0
 sqrt : ZStar -> ZStar
 sqrt Infinity   = Infinity
 sqrt (Finite n) = Finite $ mkPolar (phase n / 2) (sqrt $ magnitude n)
+
+magnitude : ZStar -> Float
+magnitude Infinity   = 1.0 / 0
+magnitude (Finite z) = magnitude z
