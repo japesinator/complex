@@ -11,12 +11,12 @@ record Spherical : Type where
 instance Eq Spherical where
   (MkSpherical p t) == (MkSpherical p' t') = p == p' && t == t'
 
-||| Convert a point from ℤ ∪ ∞ to a pair of spherical coordinates
+||| Convert a point from ℂ ∪ ∞ to a pair of spherical coordinates
 toSpherical : CStar -> Spherical
 toSpherical Infinity   = MkSpherical 0 0
 toSpherical (Finite z) = MkSpherical (2 * atan (1 / magnitude z)) (phase z)
 
-||| Convert a pair of spherical coordinates to a point from ℤ ∪ ∞.
+||| Convert a pair of spherical coordinates to a point from ℂ ∪ ∞.
 fromSpherical : Spherical -> CStar
 fromSpherical (MkSpherical p t) = if p == 0
                                      then Infinity

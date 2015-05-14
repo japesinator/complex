@@ -4,7 +4,7 @@ import Control.Algebra
 import Data.Complex
 import Data.Floats
 
-||| A type representing ℤ ∪ ∞. Intuitively, a point on the Mobius Sphere.
+||| A type representing ℂ ∪ ∞. Intuitively, a point on the Mobius Sphere.
 data CStar = Finite (Complex Float)
            | Infinity
 
@@ -34,7 +34,7 @@ instance Neg CStar where
 
 instance Show CStar where
   show Infinity   = "Infinity"
-  show (Finite z) = "Finite (" ++ show z ++ ")"
+  show (Finite z) = "Finite " ++ show z
 
 (/) : CStar -> CStar -> CStar
 Infinity        / Infinity            = 1
