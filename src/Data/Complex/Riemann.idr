@@ -9,10 +9,14 @@ import Data.Complex.CStar
 ||| @ min The lower bound given to p
 ||| @ max The upper bound given to p
 |||
-||| (if p = x * x, min = 2, max = 4, the integral approximated be from 4 to 16)
+||| (if p = x * x, min = 2, max = 4, the integral approximated will be from 4 to
+||| 16)
 riemann : (f : CStar -> CStar) -> (p : CStar -> CStar) ->
           (steps : Integer) -> (min : CStar) -> (max : CStar) -> CStar
-riemann f p steps min max = sum $ zw (*) lengths $ drop 1 $ map f path where
+riemann f p steps min max = flip (/) 2
+                          $ sum
+                          $ zw (*) lengths
+                          $ zw (+) (drop 1 vals) (init' vals) where
   zw : (a -> b -> c) -> List a -> List b -> List c
   zw _ []        _         = []
   zw _ _         []        = []
@@ -29,3 +33,5 @@ riemann f p steps min max = sum $ zw (*) lengths $ drop 1 $ map f path where
              . fromInteger) [0..steps]
   lengths : List CStar
   lengths = zw (-) (drop 1 path) (init' path)
+  vals : List CStar
+  vals = map f path
