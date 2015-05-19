@@ -6,8 +6,8 @@ import Data.Complex.CStar
 ||| Approximate an integral using a Riemann sum along a given path
 ||| @ f   The function to integrate
 ||| @ p   The path function (`id` for a straight line)
-||| @ min The lower bound given to p
-||| @ max The upper bound given to p
+||| @ min `p` inverse of the lower bound
+||| @ max `p` inverse of the bound
 |||
 ||| (if p = x * x, min = 2, max = 4, the integral approximated will be from 4 to
 ||| 16)
@@ -35,3 +35,12 @@ riemann f p steps min max = flip (/) 2
   lengths = zw (-) (drop 1 path) (init' path)
   vals : List CStar
   vals = map f path
+
+||| Approximate an integral using a Riemann sum on a domain assumed to be
+||| analytic. Uses a straight line from `min` to `max`
+||| @ f   The function to integrate
+||| @ min The lower bound
+||| @ max The upper bound
+analRiemann : (f : CStar -> CStar) -> (steps : Integer) ->
+              (min : CStar) -> (max : CStar) -> CStar
+analRiemann f = riemann f id
