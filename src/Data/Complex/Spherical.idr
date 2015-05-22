@@ -5,8 +5,10 @@ import Data.Complex.CStar
 import Data.Floats
 
 ||| Spherical coordinates ϕ and θ of a point on the Mobius Sphere
-record Spherical : Type where
-  MkSpherical : (phi : Float) -> (theta : Float) -> Spherical
+record Spherical where
+  constructor MkSpherical
+  phi   : Float
+  theta : Float
 
 instance Eq Spherical where
   (MkSpherical p t) == (MkSpherical p' t') = p == p' && t == t'
