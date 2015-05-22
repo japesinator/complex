@@ -36,6 +36,10 @@ instance Show CStar where
   show Infinity   = "Infinity"
   show (Finite z) = "Finite " ++ show z
 
+conjugate : CStar -> CStar
+conjugate Infinity   = Infinity
+conjugate (Finite a) = Finite $ conjugate a
+
 (/) : CStar -> CStar -> CStar
 Infinity        / Infinity            = 1
 Infinity        / _                   = Infinity
@@ -52,3 +56,14 @@ sqrt (Finite n) = Finite $ mkPolar (phase n / 2) (sqrt $ magnitude n)
 magnitude : CStar -> Float
 magnitude Infinity   = 1.0 / 0
 magnitude (Finite z) = magnitude z
+
+dotProduct : CStar -> CStar -> CStar
+dotProduct Infinity        _               = Infinity
+dotProduct _               Infinity        = Infinity
+dotProduct (Finite $ a:+b) (Finite $ c:+d) = Finite $ a * b + c * d :+ 0
+
+crossProduct : CStar -> CStar -> CStar
+crossProduct Infinity     _            = Infinity
+crossProduct _            Infinity     = Infinity
+crossProduct (Finite $ a) (Finite $ b) =
+  (Finite $ 1/2:+0) * (Finite $ conjugate a * b + a * conjugate b)
