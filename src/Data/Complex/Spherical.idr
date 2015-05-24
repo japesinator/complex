@@ -1,5 +1,6 @@
 module Data.Complex.Spherical
 
+import Control.Algebra
 import Data.Complex
 import Data.Complex.CStar
 import Data.Floats
@@ -37,6 +38,23 @@ instance Num Spherical where
 
 instance Neg Spherical where
   negate (MkSpherical p t) = MkSpherical p (t + pi)
+
+instance Semigroup Spherical where
+  (<+>) = (+)
+
+instance Monoid Spherical where
+  neutral = 0
+
+instance Group Spherical where
+  inverse = (* -1)
+
+instance AbelianGroup Spherical
+
+instance Ring Spherical where
+  (<.>) = (*)
+
+instance RingWithUnity Spherical where
+  unity = 1
 
 (/) : Spherical -> Spherical -> Spherical
 a / b = toSpherical $ (fromSpherical a) / (fromSpherical b)

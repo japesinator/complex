@@ -32,6 +32,23 @@ instance Num CStar where
 instance Neg CStar where
   negate = (*) (Finite $ -1:+0)
 
+instance Semigroup CStar where
+  (<+>) = (+)
+
+instance Monoid CStar where
+  neutral = 0
+
+instance Group CStar where
+  inverse = (* -1)
+
+instance AbelianGroup CStar
+
+instance Ring CStar where
+  (<.>) = (*)
+
+instance RingWithUnity CStar where
+  unity = 1
+
 instance Show CStar where
   show Infinity   = "Infinity"
   show (Finite z) = "Finite " ++ show z

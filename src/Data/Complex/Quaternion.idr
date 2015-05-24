@@ -1,5 +1,6 @@
 module Data.Complex.Quaternion
 
+import Control.Algebra
 import Data.Complex
 import Data.Floats
 import Data.Vect
@@ -30,3 +31,20 @@ instance Num Quaternion where
 
 instance Neg Quaternion where
   negate = (*) $ fromInteger $ -1
+
+instance Semigroup Quaternion where
+  (<+>) = (+)
+
+instance Monoid Quaternion where
+  neutral = 0
+
+instance Group Quaternion where
+  inverse = (* -1)
+
+instance AbelianGroup Quaternion
+
+instance Ring Quaternion where
+  (<.>) = (*)
+
+instance RingWithUnity Quaternion where
+  unity = 1
