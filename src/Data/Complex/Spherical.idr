@@ -36,6 +36,9 @@ instance Num Spherical where
 
   abs = toSpherical . abs . fromSpherical
 
+(/) : Spherical -> Spherical -> Spherical
+a / b = toSpherical $ (fromSpherical a) / (fromSpherical b)
+
 instance Neg Spherical where
   negate (MkSpherical p t) = MkSpherical p (t + pi)
 
@@ -55,9 +58,6 @@ instance Ring Spherical where
 
 instance RingWithUnity Spherical where
   unity = 1
-
-(/) : Spherical -> Spherical -> Spherical
-a / b = toSpherical $ (fromSpherical a) / (fromSpherical b)
 
 sqrt : Spherical -> Spherical
 sqrt = toSpherical . sqrt . fromSpherical

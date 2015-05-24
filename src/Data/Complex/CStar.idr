@@ -29,6 +29,15 @@ instance Num CStar where
   abs Infinity   = Infinity
   abs (Finite a) = Finite $ abs a
 
+(/) : CStar -> CStar -> CStar
+Infinity        / Infinity            = 1
+Infinity        / _                   = Infinity
+_               / Infinity            = 0
+(Finite $ a:+b) / (Finite $ c:+d)     = if c == 0 && d == 0
+                                           then Infinity
+                                           else Finite $
+  ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))
+
 instance Neg CStar where
   negate = (*) (Finite $ -1:+0)
 
@@ -49,6 +58,9 @@ instance Ring CStar where
 instance RingWithUnity CStar where
   unity = 1
 
+instance Field CStar where
+  inverseM x = const $ (/) 1 x
+
 instance Show CStar where
   show Infinity   = "Infinity"
   show (Finite z) = "Finite " ++ show z
@@ -56,15 +68,6 @@ instance Show CStar where
 conjugate : CStar -> CStar
 conjugate Infinity   = Infinity
 conjugate (Finite a) = Finite $ conjugate a
-
-(/) : CStar -> CStar -> CStar
-Infinity        / Infinity            = 1
-Infinity        / _                   = Infinity
-_               / Infinity            = 0
-(Finite $ a:+b) / (Finite $ c:+d)     = if c == 0 && d == 0
-                                           then Infinity
-                                           else Finite $
-  ((a * c + b * d) / (c * c + d * d)) :+ ((b * c - a * d) / (c * c + d * d))
 
 sqrt : CStar -> CStar
 sqrt Infinity   = Infinity
