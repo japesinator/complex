@@ -4,6 +4,7 @@ sourcedir = src
 
 modules = Data.Complex.CStar,
           Data.Complex.Mobius,
+          Data.Complex.Quaternion,
           Data.Complex.Riemann,
           Data.Complex.Spherical
 
