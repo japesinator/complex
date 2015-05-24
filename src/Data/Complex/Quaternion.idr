@@ -48,3 +48,8 @@ instance Ring Quaternion where
 
 instance RingWithUnity Quaternion where
   unity = 1
+
+instance Field Quaternion where
+  inverseM [a,b,c,d] p = [a / alpha, -b / alpha, -c / alpha, -d / alpha] where
+    alpha : Float
+    alpha = (pow a 2) + (pow b 2) + (pow c 2) + (pow d 2)
