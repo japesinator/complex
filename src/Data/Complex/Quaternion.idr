@@ -5,15 +5,20 @@ import Data.Complex
 import Data.Floats
 import Data.Vect
 
+||| A type representing an extension of the complex numbers to four dimensions.
+||| [a, b, c, d] (Idris) ⇔ a + bi + cj + dk (Mathematics)
 Quaternion : Type
 Quaternion = Vect 4 Float
 
+||| Extract the real part of a given Quaternion
 realPart : Quaternion -> Float
 realPart = head
 
+||| Extract the imaginary part of a given Quaternion
 imagPart : Quaternion -> Float
 imagPart = head . tail
 
+||| Extract the complex part, of form a + bi, of a given Quaternion
 complexPart : Quaternion -> Complex Float
 complexPart [a,b,_,_] = a :+ b
 
@@ -50,6 +55,6 @@ instance RingWithUnity Quaternion where
   unity = 1
 
 instance Field Quaternion where
-  inverseM [a,b,c,d] p = [a / alpha, -b / alpha, -c / alpha, -d / alpha] where
+  inverseM [a,b,c,d] = const $ map (flip (/) alpha) [a, -b, -c, -d] where
     alpha : Float
     alpha = (pow a 2) + (pow b 2) + (pow c 2) + (pow d 2)
