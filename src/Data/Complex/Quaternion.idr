@@ -22,6 +22,36 @@ imagPart = head . tail
 complexPart : Quaternion -> Complex Float
 complexPart [a,b,_,_] = a :+ b
 
+fromReal : Float -> Quaternion
+fromReal = flip (::) [0,0,0]
+
+toMatrix : Quaternion -> Vect 2 (Vect 2 (Complex Float))
+toMatrix [a,b,c,d] = [[a :+ b, c :+ d], [-c :+ d, a :+ -b]]
+
+complement : Quaternion -> Quaternion
+complement [a,b,c,d] = [a,-b,-c,-d]
+
+length : Quaternion -> Float
+length = sqrt . with Foldable sum . map (flip pow 2)
+
+normalize : Quaternion -> Quaternion
+normalize q = map (flip (/) $ length q) q
+
+act : Quaternion -> Vect 3 Float -> Vect 3 Float
+act q [x,y,z] = let [a,b,c,d] = normalize q in
+  [ x * (pow a 2 + pow b 2 - pow c 2 - pow d 2)
+  + y * (2 * (b * c - a * d))
+  + z * (2 * (b * d + a * c))
+  ,
+    x * (2 * (b * c + a * d))
+  + y * (pow a 2 - pow b 2 + pow c 2 - pow d 2)
+  + z * (2 * (c * d - a * b))
+  ,
+    x * (2 * (b * d - a * c))
+  + y * (2 * (c * d + a * b))
+  + z * (pow a 2 - pow b 2 - pow c 2 + pow d 2)
+  ]
+
 instance Num Quaternion where
   (+) = zipWith (+)
   (-) = zipWith (-)
@@ -31,8 +61,8 @@ instance Num Quaternion where
                                     , a1 * d2 + b1 * c2 - c1 * b2 + d1 * a2
                                     ]
 
-  fromInteger = flip (::) [0,0,0] . fromInteger
-  abs         = flip (::) [0,0,0] . sqrt . foldr1 (+) . map (flip pow 2)
+  fromInteger = fromReal . fromInteger
+  abs         = fromReal . length
 
 instance Neg Quaternion where
   negate = (*) $ fromInteger $ -1
@@ -57,6 +87,7 @@ instance RingWithUnity Quaternion where
 -- Note: Quaternions are not a field proper, as multiplication on quaternions
 -- is non-commutative
 instance Field Quaternion where
-  inverseM [a,b,c,d] = const $ map (flip (/) alpha) [a, -b, -c, -d] where
-    alpha : Float
-    alpha = (pow a 2) + (pow b 2) + (pow c 2) + (pow d 2)
+  inverseM q = const $ map ( flip (/)
+                           $ with Foldable sum
+                           $ map (flip pow 2) q
+                           ) $ complement q
