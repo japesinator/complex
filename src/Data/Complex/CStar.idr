@@ -59,7 +59,7 @@ instance RingWithUnity CStar where
   unity = 1
 
 instance Field CStar where
-  inverseM x = const $ (/) 1 x
+  inverseM x = const $ 1 / x
 
 instance Show CStar where
   show Infinity   = "Infinity"

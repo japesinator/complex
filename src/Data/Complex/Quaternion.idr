@@ -54,6 +54,8 @@ instance Ring Quaternion where
 instance RingWithUnity Quaternion where
   unity = 1
 
+-- Note: Quaternions are not a field proper, as multiplication on quaternions
+-- is non-commutative
 instance Field Quaternion where
   inverseM [a,b,c,d] = const $ map (flip (/) alpha) [a, -b, -c, -d] where
     alpha : Float
