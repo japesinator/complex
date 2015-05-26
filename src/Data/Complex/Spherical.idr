@@ -12,7 +12,7 @@ record Spherical where
   theta : Float
 
 instance Eq Spherical where
-  (MkSpherical p t) == (MkSpherical p' t') = p == p' && t == t'
+  (MkSpherical p t) == (MkSpherical p' t') = (p,t) == (p',t')
 
 ||| Convert a point from ℂ ∪ ∞ to a pair of spherical coordinates
 toSpherical : CStar -> Spherical
@@ -36,7 +36,7 @@ instance Num Spherical where
 
   fromInteger n = MkSpherical (2 * atan (1 / fromInteger n)) 0
 
-  abs (MkSpherical p _) = MkSpherical p 0
+  abs z = MkSpherical (phi z) 0
 
 (/) : Spherical -> Spherical -> Spherical
 a / b = toSpherical $ (fromSpherical a) / (fromSpherical b)
