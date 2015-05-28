@@ -22,21 +22,31 @@ imagPart = head . tail
 complexPart : Quaternion -> Complex Float
 complexPart [a,b,_,_] = a :+ b
 
+||| Turn a real number into a Quaternion
 fromReal : Float -> Quaternion
 fromReal = flip (::) [0,0,0]
 
+||| Turn a complex number into a Quaternion
+fromComplex : Complex Float -> Quaternion
+fromComplex (a:+b) = [a,b,0,0]
+
+||| Turn a quaternion into its matrix representation
 toMatrix : Quaternion -> Vect 2 (Vect 2 (Complex Float))
 toMatrix [a,b,c,d] = [[a :+ b, c :+ d], [-c :+ d, a :+ -b]]
 
+||| Get the complement of a given Quaternion
 complement : Quaternion -> Quaternion
 complement [a,b,c,d] = [a,-b,-c,-d]
 
+||| Find the length as a four-dimensionsal vector of a given quaternion
 length : Quaternion -> Float
 length = sqrt . with Foldable sum . map (flip pow 2)
 
+||| Convert a quaternion to a quaternion in the same "direction" with "length" 1
 normalize : Quaternion -> Quaternion
 normalize q = map (flip (/) $ length q) q
 
+||| The left action of a quaternion on a vector in three dimensions
 act : Quaternion -> Vect 3 Float -> Vect 3 Float
 act q [x,y,z] = let [a,b,c,d] = normalize q in
   [ x * (pow a 2 + pow b 2 - pow c 2 - pow d 2)
