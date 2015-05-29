@@ -65,23 +65,28 @@ instance Show CStar where
   show Infinity   = "Infinity"
   show (Finite z) = "Finite " ++ show z
 
+||| Take the conjugate of a given CStar
 conjugate : CStar -> CStar
 conjugate Infinity   = Infinity
 conjugate (Finite a) = Finite $ conjugate a
 
+||| Take the square root of a given CStar
 sqrt : CStar -> CStar
 sqrt Infinity   = Infinity
 sqrt (Finite n) = Finite $ mkPolar (phase n / 2) (sqrt $ magnitude n)
 
+||| Find the magnitude of a CStar as a vector
 magnitude : CStar -> Float
 magnitude Infinity   = 1.0 / 0
 magnitude (Finite z) = magnitude z
 
+||| Take the dot product of two CStars
 dotProduct : CStar -> CStar -> CStar
 dotProduct Infinity        _               = Infinity
 dotProduct _               Infinity        = Infinity
 dotProduct (Finite $ a:+b) (Finite $ c:+d) = Finite $ a * b + c * d :+ 0
 
+||| Take the cross product of two CStars
 crossProduct : CStar -> CStar -> CStar
 crossProduct Infinity     _            = Infinity
 crossProduct _            Infinity     = Infinity
