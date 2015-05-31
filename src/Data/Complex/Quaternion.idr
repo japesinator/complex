@@ -38,12 +38,12 @@ toMatrix [a,b,c,d] = [[a :+ b, c :+ d], [-c :+ d, a :+ -b]]
 complement : Quaternion -> Quaternion
 complement [a,b,c,d] = [a,-b,-c,-d]
 
-||| Find the length as a four-dimensionsal vector of a given quaternion
-length : Quaternion -> Float
+||| Find the length of an n-dimensionsal vector
+length : Vect n Float -> Float
 length = sqrt . with Foldable sum . map (flip pow 2)
 
-||| Convert a quaternion to a quaternion in the same "direction" with "length" 1
-normalize : Quaternion -> Quaternion
+||| Normalize an n-dimensionsal vector to length one
+normalize : Vect n Float -> Vect n Float
 normalize q = map (flip (/) $ length q) q
 
 ||| The left action of a quaternion on a vector in three dimensions
@@ -61,6 +61,10 @@ act q [x,y,z] = let [a,b,c,d] = normalize q in
   + y * (2 * (c * d + a * b))
   + z * (pow a 2 - pow b 2 - pow c 2 + pow d 2)
   ]
+
+rotate : Vect 3 Float -> Float -> Quaternion
+rotate v t = let [x,y,z] = normalize v
+                 s = sin $ 0.5 * t in [cos $ 0.5 * t, x * s, y * s, z * s]
 
 instance Num Quaternion where
   (+) = zipWith (+)
