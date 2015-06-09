@@ -46,6 +46,9 @@ length = sqrt . with Foldable sum . map (flip pow 2)
 normalize : Vect n Float -> Vect n Float
 normalize q = map (flip (/) $ length q) q
 
+dotProduct : Quaternion -> Quaternion -> Float
+dotProduct p q = Foldable.sum $ zipWith (*) p q
+
 ||| The left action of a quaternion on a vector in three dimensions
 act : Quaternion -> Vect 3 Float -> Vect 3 Float
 act q [x,y,z] = let [a,b,c,d] = normalize q in
@@ -105,3 +108,15 @@ instance Field Quaternion where
                            $ with Foldable sum
                            $ map (flip pow 2) q
                            ) $ complement q
+
+slerp : Quaternion -> Quaternion -> Float -> Quaternion
+slerp q p t = if (1 - cos phi) < 0.00000001 then q else
+  map (flip (/) $ sin phi) (map ((*) $ sin $ phi - t * phi) q)
+                         + (map ((*) $ sin $ t * phi)       $ f p)
+  where
+    dqp : Float
+    dqp = dotProduct q p
+    f : Quaternion -> Quaternion
+    f = if dqp < 0 then negate else id
+    phi : Float
+    phi = acos $ abs dqp
