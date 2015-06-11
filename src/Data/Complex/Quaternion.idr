@@ -65,6 +65,7 @@ act q [x,y,z] = let [a,b,c,d] = normalize q in
   + z * (pow a 2 - pow b 2 - pow c 2 + pow d 2)
   ]
 
+||| Generate the rotation quaternion around an axis by an angle
 rotate : Vect 3 Float -> Float -> Quaternion
 rotate v t = let [x,y,z] = normalize v
                  s = sin $ 0.5 * t in [cos $ 0.5 * t, x * s, y * s, z * s]
@@ -109,6 +110,7 @@ instance Field Quaternion where
                            $ map (flip pow 2) q
                            ) $ complement q
 
+||| Spherical linear interpolation of two quaternions
 slerp : Quaternion -> Quaternion -> Float -> Quaternion
 slerp q p t = if (1 - cos phi) < 0.00000001 then q else
   map (flip (/) $ sin phi) (map ((*) $ sin $ phi - t * phi) q)
